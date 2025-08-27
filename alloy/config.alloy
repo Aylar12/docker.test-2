@@ -1,0 +1,18 @@
+prometheus.exporter.cadvisor "aylar_lab" {
+  docker_host = "unix:///var/run/docker.sock"
+
+  storage_duration = "5m"
+}
+
+
+prometheus.scrape "scraper" {
+  targets    = prometheus.exporter.cadvisor.test.targets
+  forward_to = [ prometheus.remote_write.demo.receiver ]
+}
+
+prometheus.remote_write "demo" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+
+  }
+}
